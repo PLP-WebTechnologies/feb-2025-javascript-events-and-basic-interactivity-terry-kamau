@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mood Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f0f4f8;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    .mood-options {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .mood {
+      font-size: 2rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .mood.selected {
+      transform: scale(1.3);
+      border: 2px solid #007BFF;
+      border-radius: 50%;
+      padding: 5px;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      resize: none;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    #charCount {
+      text-align: right;
+      font-size: 0.9em;
+      color: #666;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Daily Mood Tracker</h2>
+
+  <div class="mood-options" id="moodOptions">
+    <div class="mood" data-mood="Happy">😊</div>
+    <div class="mood" data-mood="Sad">😢</div>
+    <div class="mood" data-mood="Angry">😠</div>
+    <div class="mood" data-mood="Excited">🤩</div>
+  </div>
+
+  <label for="reason">Why do you feel this way?</label>
+  <textarea id="reason" rows="4" maxlength="150"></textarea>
+  <div id="charCount">0/150</div>
+  <div class="error" id="formError"></div>
+
+  <button id="submitBtn">Track Mood</button>
+  <div class="success" id="successMessage"></div>
+</div>
+
+<script>
+  const moodOptions = document.getElementById("moodOptions");
+  const moods = document.querySelectorAll(".mood");
+  const reasonInput = document.getElementById("reason");
+  const charCount = document.getElementById("charCount");
+  const submitBtn = document.getElementById("submitBtn");
+  const formError = document.getElementById("formError");
+  const successMessage = document.getElementById("successMessage");
+
+  let selectedMood = "";
+
+  // Event Listener: Mood selection
+  moods.forEach(mood => {
+    mood.addEventListener("click", () => {
+      moods.forEach(m => m.classList.remove("selected")); // Deselect all
+      mood.classList.add("selected"); // Highlight selected
+      selectedMood = mood.dataset.mood;
+    });
+  });
+
+  // Event Listener: Character counter for textarea
+  reasonInput.addEventListener("input", () => {
+    charCount.textContent = `${reasonInput.value.length}/150`;
+  });
+
+  // Event Listener: Submit button
+  submitBtn.addEventListener("click", () => {
+    formError.textContent = "";
+    successMessage.textContent = "";
+
+    // Validation
+    if (!selectedMood) {
+      formError.textContent = "Please select your mood.";
+      return;
+    }
+
+    if (reasonInput.value.trim() === "") {
+      formError.textContent = "Please provide a reason.";
+      return;
+    }
+
+    // If valid
+    successMessage.textContent = `Mood "${selectedMood}" tracked successfully!`;
+
+    // Optional: reset form
+    moods.forEach(m => m.classList.remove("selected"));
+    selectedMood = "";
+    reasonInput.value = "";
+    charCount.textContent = "0/150";
+  });
+</script>
+
+</body>
+</html>
